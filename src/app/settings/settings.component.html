@@ -1,0 +1,30 @@
+<div *ngIf="database$ | async as settings; else notFound">
+ 
+  <div class="my-3 p-3 bg-body rounded shadow-sm">
+    <h6 class="border-bottom pb-2 mb-0 d-flex align-items-center justify-content-between">
+      <span>Time Tracking Periods</span>
+    </h6>
+
+    <div class="list-group list-group-flush">
+      <a class="list-group-item list-group-item-action" *ngFor="let period of settings.trackingPeriods"
+        [routerLink]="['../tracking-period', period.id]">
+        <strong class="text-gray-dark">{{ period.start.toISODate() }} - {{ period.end.toISODate() }}</strong>
+        Holidays at Start: {{ period.totalHolidaysAtStart.toHuman() }} Overhours
+        at Start:
+        {{ period.totalOverhoursAtStart.toHuman() }}
+      </a>
+      <button class="list-group-item list-group-item-action text-center" (click)="addTrackingPeriod()">
+        <fa-icon icon="plus"></fa-icon> Add
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #notFound> No database opened! </ng-template>
+
+<ng-template #loadingProjects let-modal>
+  <p class="text-center p-3">
+    <fa-icon icon="cog" [spin]="true"></fa-icon>
+    Reloading projects from account...
+  </p>
+</ng-template>

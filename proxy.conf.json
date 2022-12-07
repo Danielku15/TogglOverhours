@@ -1,0 +1,8 @@
+{
+    "/api": {
+      "target": "https://api.track.toggl.com/",
+      "changeOrigin": true,
+      "secure": false,
+      "logLevel": "debug"
+    }
+  }
