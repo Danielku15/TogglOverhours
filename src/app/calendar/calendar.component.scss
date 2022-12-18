@@ -1,0 +1,10 @@
+.calendar-heading,
+.calendar-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.calendar-row div {
+  aspect-ratio: 1;
+  border: 1px solid black;
+}

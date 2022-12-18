@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -20,6 +20,13 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
+import { MonthComponent } from './month/month.component';
+import { IFileSystemService, BrowserFileSystemService, TestFileSystemService } from './file-system.service';
+import { DatabaseService } from './database.service';
+
+function initializeApp(service:DatabaseService) {
+  return () => service.reopen();
+}
 
 @NgModule({
   declarations: [
@@ -33,7 +40,8 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
     WeekdayPercentageComponent,
     LoginComponent,
     LayoutComponent,
-    CreateComponent
+    CreateComponent,
+    MonthComponent
   ],
   imports: [
     BrowserModule,
@@ -43,12 +51,15 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
     FontAwesomeModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    // {provide: IFileSystemService, useClass: BrowserFileSystemService},
+    {provide: IFileSystemService, useClass: TestFileSystemService},
+    { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [DatabaseService], multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
   public constructor(library: FaIconLibrary) {
     library.addIconPacks(fas, far, fab)
   }
-
 }
