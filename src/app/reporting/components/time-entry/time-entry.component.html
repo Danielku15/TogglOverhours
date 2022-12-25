@@ -1,0 +1,15 @@
+<ng-template #tipContent>
+  <span *ngIf="timeEntry.entry.title; else noTitle">
+    {{timeEntry.entry.title}} - {{timeEntry.project?.name}}
+  </span>
+  <ng-template #noTitle>
+    {{timeEntry.project?.name}}
+  </ng-template>
+</ng-template>
+<div
+  class="badge rounded-pill mb-1"
+  [ngbTooltip]="tipContent"
+  [ngStyle]="computeBadgeStyle()"
+>
+  {{ timeEntry.entry.duration | durationFormat }}
+</div>

@@ -9,7 +9,5 @@
 </div>
 
 <div class="week row" *ngFor="let week of month.weeks">
-    <div *ngFor="let day of week.days" [ngClass]="{'day-placeholder': day.placeholder }">
-        {{ day.date.toISODate() }}
-    </div>
+    <to-day *ngFor="let day of week.days" [day]="day"></to-day>
 </div>

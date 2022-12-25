@@ -6,6 +6,7 @@ import { ToastsComponent } from './components/toasts/toasts.component';
 import { LayoutComponent } from './components/layout/layout.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
+import { ProjectColorComponent } from './components/project-color/project-color.component';
 
 
 
@@ -14,7 +15,8 @@ import { RouterModule } from '@angular/router';
     DateInputDirective,
     DurationInputDirective,
     ToastsComponent,
-    LayoutComponent
+    LayoutComponent,
+    ProjectColorComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +27,8 @@ import { RouterModule } from '@angular/router';
     DateInputDirective,
     DurationInputDirective,
     ToastsComponent,
-    LayoutComponent
+    LayoutComponent,
+    ProjectColorComponent
   ]
 })
 export class SharedModule { }

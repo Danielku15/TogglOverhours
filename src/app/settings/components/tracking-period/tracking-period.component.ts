@@ -38,7 +38,7 @@ export class TrackingPeriodComponent implements OnInit {
     );
 
     this.projects$ = this.database.database$.pipe(
-      map((database) => database?.projects.filter(p => p.active && !p.deleted) ?? [])
+      map((database) => database ? Array.from(database.projects.values()).filter(p => p.active && !p.deleted) : [])
     );
 
     this.projectHours$ = combineLatest([

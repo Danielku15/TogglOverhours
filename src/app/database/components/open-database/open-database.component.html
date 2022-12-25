@@ -1,27 +1,44 @@
 <div class="form-open">
-    <h1 class="h3 mb-3 font-weight-normal">
-      Get Started
-    </h1>
-    <div class="input-group mb-2 has-validation">
-      <span class="input-group-text">Database</span>
-      <input type="text" [ngModel]="databaseName || 'No Database selected'" readonly class="form-control"
-        [class.is-invalid]="databaseFileError" />
-      <button class="btn btn-outline-secondary" type="button" (click)="chooseDatabase()">Select</button>
-      <div class="invalid-feedback" *ngIf="databaseFileError">
-        {{databaseFileError}}
-      </div>
-    </div>
-    <div class="input-group mb-2 has-validation">
-      <span class="input-group-text">Database Password</span>
-      <input type="password" id="inputPassword" [class.is-invalid]="databasePasswordError" class="form-control"
-        [(ngModel)]="databasePassword" required />
-      <div class="invalid-feedback" *ngIf="databasePasswordError">
-        {{databasePasswordError}}
-      </div>
-    </div>
-    <button class="btn btn-lg btn-primary btn-block" (click)="openDatabase()">
-      Open Database
+  <h1 class="h3 mb-3 font-weight-normal">Get Started</h1>
+  <div class="input-group mb-2 has-validation">
+    <span class="input-group-text">Database</span>
+    <input
+      type="text"
+      [ngModel]="databaseName || 'No Database selected'"
+      readonly
+      class="form-control"
+      [class.is-invalid]="databaseFileError"
+    />
+    <button
+      class="btn btn-outline-secondary"
+      type="button"
+      (click)="chooseDatabase()"
+    >
+      Select
     </button>
-    <hr />
-    <a routerLink="../create">Create new database</a>
+    <div class="invalid-feedback" *ngIf="databaseFileError">
+      {{ databaseFileError }}
+    </div>
   </div>
+  <div class="input-group mb-2 has-validation">
+    <span class="input-group-text">Database Password</span>
+    <input
+      type="password"
+      id="inputPassword"
+      [class.is-invalid]="databasePasswordError"
+      class="form-control"
+      [(ngModel)]="databasePassword"
+      required
+    />
+    <div class="invalid-feedback" *ngIf="databasePasswordError">
+      {{ databasePasswordError }}
+    </div>
+  </div>
+  <button class="btn btn-lg btn-primary btn-block" (click)="openDatabase()">
+    Open Database
+  </button>
+  <hr />
+  <a routerLink="../create">Create new database</a>
+  <hr />
+  <a routerLink="../about">About toggl-overhours</a>
+</div>

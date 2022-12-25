@@ -1,5 +1,13 @@
 # TogglOverhours
 
+TogglOverhours is a small helper application allows you to generate
+various statistics over your tracked working ours in [Toggl Track](https://track.toggl.com/). 
+The data needed by this app is stored in a small database file which is stored locally on
+your PC, no data is stored on the server of this app.
+
+Note that this project is mainly for personal usage but it might be useful for others too.
+Feel free to contribute if you use it and think some features could be useful.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.

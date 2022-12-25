@@ -5,12 +5,14 @@ import { OpenDatabaseComponent } from './components/open-database/open-database.
 import { FormsModule } from '@angular/forms';
 import { DatabaseRoutingModule } from './database-routing.module';
 import { DatabaseComponent } from '../database/database.component';
+import { AboutComponent } from './components/about/about.component';
 
 @NgModule({
   declarations: [
     CreateDatabaseComponent,
     OpenDatabaseComponent,
-    DatabaseComponent
+    DatabaseComponent,
+    AboutComponent
   ],
   imports: [
     CommonModule,

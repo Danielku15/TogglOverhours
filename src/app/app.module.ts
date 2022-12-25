@@ -12,7 +12,7 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
-import { IFileSystemService, TestFileSystemService } from './core/services/file-system.service';
+import { BrowserFileSystemService, IFileSystemService, TestFileSystemService } from './core/services/file-system.service';
 import { DatabaseService } from './core/services/database.service';
 import { DatabaseModule } from './database/database.module';
 import { ReportingModule } from './reporting/reporting.module';
@@ -41,8 +41,8 @@ function initializeApp(service: DatabaseService) {
     SettingsModule
   ],
   providers: [
-    // {provide: IFileSystemService, useClass: BrowserFileSystemService},
-    { provide: IFileSystemService, useClass: TestFileSystemService },
+    {provide: IFileSystemService, useClass: BrowserFileSystemService},
+    // { provide: IFileSystemService, useClass: TestFileSystemService },
     { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [DatabaseService], multi: true }
   ],
   bootstrap: [AppComponent]

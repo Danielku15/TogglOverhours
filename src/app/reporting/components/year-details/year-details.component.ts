@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { TimeRange } from '@app/reporting/models/time-range';
 import { TrackingPeriodStatistics } from '@app/reporting/models/work-statistics';
 
 @Component({
@@ -8,4 +9,5 @@ import { TrackingPeriodStatistics } from '@app/reporting/models/work-statistics'
 })
 export class YearDetailsComponent {
   @Input() trackingPeriod!: TrackingPeriodStatistics;
+  @Output() onReloadTimeEntries: EventEmitter<TimeRange> = new EventEmitter<TimeRange>();
 }

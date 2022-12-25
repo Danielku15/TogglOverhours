@@ -69,12 +69,13 @@ export class WorkspaceProject implements JsonSerializable {
     };
   }
 
-  public fromJSON(json: any): void {
+  public fromJSON(json: any): WorkspaceProject {
     this.id = json.id;
     this.color = json.color;
     this.active = json.active;
     this.name = json.name;
     this.deleted = json.deleted;
+    return this;
   }
 }
 
@@ -113,8 +114,8 @@ export class WeekdayPercentage extends WeekdaySettings<number> {
     this.wednesday = 100;
     this.thursday = 100;
     this.friday = 100;
-    this.saturday = 0;
-    this.sunday = 0;
+    this.saturday = 100;
+    this.sunday = 100;
   }
 
   override toJSON(): any {
@@ -175,7 +176,8 @@ export class WeekdayDuration extends WeekdaySettings<Duration> {
 
 export class TimeTrackingEntry implements JsonSerializable {
   id: number = 0;
-  projectId: number = 0;
+  projectId?: number;
+  title: string = "";
   start: DateTime = DateTime.now();
   end: DateTime = DateTime.now();
   duration: Duration = Duration.fromMillis(0);
@@ -184,6 +186,7 @@ export class TimeTrackingEntry implements JsonSerializable {
     return {
       id: this.id,
       projectId: this.projectId,
+      title: this.title,
       start: this.start.toISO(),
       end: this.end.toISO(),
       duration: this.duration.toISO(),
@@ -193,6 +196,7 @@ export class TimeTrackingEntry implements JsonSerializable {
   fromJSON(json: any): TimeTrackingEntry {
     this.id = json.id;
     this.projectId = json.projectId;
+    this.title = json.title ?? "";
     this.start = DateTime.fromISO(json.start);
     this.end = DateTime.fromISO(json.end);
     this.duration = Duration.fromISO(json.duration);
@@ -215,16 +219,21 @@ export class TimeTrackingPeriod implements JsonSerializable {
 
   workingHours: WeekdayDuration = new WeekdayDuration();
 
-  noProjectHours: WeekdayPercentage = new WeekdayPercentage();
+  noProjectHours: ProjectSettings = new ProjectSettings();
 
   projectHours: Map<number, ProjectSettings> = new Map<
     number,
     ProjectSettings
   >();
 
-  timeEntries: TimeTrackingEntry[] = [];
+  timeEntries: Map<number, TimeTrackingEntry> = new Map<number, TimeTrackingEntry>()
 
   public constructor(public database: Database) { }
+
+  
+  public getProjectHours(projectId: number | undefined): ProjectSettings {
+    return this.projectHours.get(projectId as number) ?? this.noProjectHours;
+  }
 
   toJSON(): any {
     return {
@@ -245,7 +254,12 @@ export class TimeTrackingPeriod implements JsonSerializable {
           kvp[1].toJSON(),
         ])
       ),
-      timeEntries: this.timeEntries.map((t) => t.toJSON()),
+      timeEntries: Object.fromEntries(
+        Array.from(this.timeEntries.entries()).map((kvp) => [
+          kvp[0],
+          kvp[1].toJSON(),
+        ])
+      )
     };
   }
   fromJSON(json: any): void {
@@ -265,8 +279,16 @@ export class TimeTrackingPeriod implements JsonSerializable {
         new ProjectSettings().fromJSON(kvp[1]),
       ])
     );
-    this.timeEntries = json.timeEntries.map((v: any) =>
-      new TimeTrackingEntry().fromJSON(v)
+
+    const timeEntries = Object.entries(json.timeEntries).map((kvp) => [
+      Number(kvp[0]),
+      new TimeTrackingEntry().fromJSON(kvp[1]),
+    ] as [number, TimeTrackingEntry]);
+    timeEntries.sort((a, b) => {
+      return a[1].start.toMillis() - b[1].start.toMillis()
+    });
+    this.timeEntries = new Map<number, TimeTrackingEntry>(
+      timeEntries
     );
   }
 }
@@ -288,15 +310,20 @@ export class Database implements JsonSerializable {
   public lastUpdate: DateTime = DateTime.now();
   public workspaceId: number = 0;
   public togglApiToken: string = '';
-  public projects: WorkspaceProject[] = [];
-  public trackingPeriods: TimeTrackingPeriod[] = [];
+  public projects: Map<number, WorkspaceProject> = new Map();
+  public trackingPeriods: TimeTrackingPeriod[] = [];  
 
   toJSON(context: JsonSerializationContext) {
     return {
       lastUpdate: this.lastUpdate.toISO(),
       togglApiToken: context.encryptData(this.togglApiToken),
       workspaceId: this.workspaceId,
-      projects: this.projects.map((p) => p.toJSON()),
+      projects: Object.fromEntries(
+        Array.from(this.projects.entries()).map((kvp) => [
+          kvp[0],
+          kvp[1].toJSON(),
+        ])
+      ),
       trackingPeriods: this.trackingPeriods.map((p) => p.toJSON()),
     };
   }
@@ -304,11 +331,12 @@ export class Database implements JsonSerializable {
     this.lastUpdate = DateTime.fromISO(json.lastUpdate);
     this.togglApiToken = context.decryptData(json.togglApiToken);
     this.workspaceId = json.workspaceId;
-    this.projects = (json.projects as any[]).map((o) => {
-      const p = new WorkspaceProject();
-      p.fromJSON(o);
-      return p;
-    });
+    this.projects = new Map<number, WorkspaceProject>(
+      Object.entries(json.projects).map((kvp) => [
+        Number(kvp[0]),
+        new WorkspaceProject().fromJSON(kvp[1]),
+      ])
+    );
     this.trackingPeriods = (json.trackingPeriods as any[]).map((o) => {
       const p = new TimeTrackingPeriod(this);
       p.fromJSON(o);

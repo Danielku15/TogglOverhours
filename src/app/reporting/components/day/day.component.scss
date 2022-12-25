@@ -1,0 +1,47 @@
+:host {
+    padding: 0 !important;
+}
+
+.day {
+    width: 100%;
+    height: 100%;
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 0px 0px;
+    grid-template-areas:
+        "date"
+        "entries"
+        "statistics";
+}
+
+.is-future {
+    opacity: 0.2;
+}
+
+.day-placeholder,
+.no-work-day {
+    background: var(--bs-gray-200);
+}
+
+.date {
+    grid-area: date;
+}
+
+.entries {
+    grid-area: entries;
+}
+
+.statistics {
+    grid-area: statistics;
+}
+
+.statistics.has-overhours {
+    color: rgba(var(--bs-success-rgb));
+}
+
+.statistics.needs-overhours {
+    color: rgba(var(--bs-danger-rgb));
+}

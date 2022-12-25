@@ -1,36 +1,26 @@
-<div class="row gy-2 gx-3 align-items-center">
+<div class="row gy-2 gx-3 align-items-center mb-3">
     <div class="col-auto">
         <div class="input-group">
             <span class="input-group-text">Worked</span>
-            <input type="text" class="form-control" />
+            <input type="text" class="form-control" [value]="month.hoursWorked | durationFormat: month.hoursNeeded"
+                readonly />
         </div>
     </div>
 
     <div class="col-auto">
         <div class="input-group">
-            <span class="input-group-text">Overhours until now</span>
-            <input type="text" class="form-control" />
+            <span class="input-group-text">Overhours worked this month</span>
+            <input type="text" class="form-control" [value]="month.overHoursWorked | durationFormat" readonly />
         </div>
     </div>
 
-    <div class="col-auto">
+    <div class="col-auto" *ngFor="let perProject of month.perProjectDurations | keyvalue">
         <div class="input-group">
-            <span class="input-group-text">Overhours if working normally until the end of the month</span>
-            <input type="text" class="form-control" />
-        </div>
-    </div>
-
-    <div class="col-auto">
-        <div class="input-group">
-            <span class="input-group-text">Project 1</span>
-            <input type="text" class="form-control" />
-        </div>
-    </div>
-
-    <div class="col-auto">
-        <div class="input-group">
-            <span class="input-group-text">Project 2</span>
-            <input type="text" class="form-control" />
+            <span class="input-group-text">
+                <to-project-color [project]="perProject.key"></to-project-color>
+                {{perProject.key.name}}
+            </span>
+            <input type="text" class="form-control" [value]="perProject.value | durationFormat" readonly />
         </div>
     </div>
 </div>

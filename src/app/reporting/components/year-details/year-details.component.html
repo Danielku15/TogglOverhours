@@ -1,1 +1,2 @@
-<to-month *ngFor="let month of trackingPeriod.months" [month]="month"></to-month>
+<to-month *ngFor="let month of trackingPeriod.months" [month]="month"
+(onReloadTimeEntries)="onReloadTimeEntries.emit($event)"></to-month>

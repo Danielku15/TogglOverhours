@@ -53,7 +53,7 @@ export class SettingsOverviewComponent {
   addTrackingPeriod() {
     const period = new TimeTrackingPeriod(this.database$.value!);
 
-    for (const p of this.database$!.value!.projects) {
+    for (const p of this.database$!.value!.projects.values()) {
       if (p.active && !p.deleted) {
         period.projectHours.set(p.id, new ProjectSettings());
       }

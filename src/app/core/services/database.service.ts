@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 import { BehaviorSubject } from 'rxjs';
 import { TogglDatabaseFilePickerOptions } from '../constants/file-picker';
-import { Database, PasswordEncryptingJsonSerializationContext, WorkspaceProject, TimeTrackingPeriod } from '../models/database';
+import { Database, PasswordEncryptingJsonSerializationContext, WorkspaceProject, TimeTrackingPeriod, TimeTrackingEntry, ProjectSettings } from '../models/database';
 import { IFileSystemFileHandle, IFileSystemService } from './file-system.service';
 import { ApiTogglProject, ApiTimeEntryGroup } from './toggl-api.service';
 
@@ -75,6 +75,7 @@ export class DatabaseService {
     if (!db || !this._handle) {
       return;
     }
+    db.lastUpdate = DateTime.now();
 
     db.writeToFile(
       this._handle!,
@@ -89,9 +90,7 @@ export class DatabaseService {
       return;
     }
 
-    const existingLookup = new Map<number, WorkspaceProject>(
-      db.projects.map((p) => [p.id, p])
-    );
+    const existingLookup = new Map<number, WorkspaceProject>(db.projects);
 
     while (projects.length > 0) {
       const newProject = projects.pop()!;
@@ -100,7 +99,8 @@ export class DatabaseService {
       let existingProject = existingLookup.get(newProject.id);
       if (!existingProject) {
         existingProject = new WorkspaceProject();
-        db.projects.push(existingProject);
+        existingProject.id = newProject.id;
+        db.projects.set(existingProject.id, existingProject);
       }
 
       // update values
@@ -118,9 +118,53 @@ export class DatabaseService {
       p.deleted = true;
     }
 
+    // update all time periods accordingly
+    for(const period of db.trackingPeriods) {
+
+      const existingProjects = [...period.projectHours.entries()];
+      const newProjects = new Map<number, WorkspaceProject>(
+        db.projects
+      );
+
+      for(const project of existingProjects) {
+        if(!newProjects.has(project[0])) {
+          period.projectHours.delete(project[0]);
+        } else {
+          newProjects.delete(project[0]);
+        }
+      } 
+
+      for(const newProject of newProjects.entries()) {
+        period.projectHours.set(newProject[0], new ProjectSettings())
+      }
+    }
+
     this.save();
   }
 
-  importTimeEntriesFromApi(entries: ApiTimeEntryGroup[], trackingPeriod: TimeTrackingPeriod, start: DateTime, end: DateTime) {
+  importTimeEntriesFromApi(groups: ApiTimeEntryGroup[], trackingPeriod: TimeTrackingPeriod) {
+    const database = this.database$.value!;
+
+    const projectLookup = database.projects;
+    const exisingEntries = new Map<number, TimeTrackingEntry>(trackingPeriod.timeEntries);
+
+    for (const group of groups) {
+
+      for (const entry of group.time_entries) {
+
+        let existing = exisingEntries.get(entry.id);
+        if (!existing) {
+          existing = new TimeTrackingEntry();
+          existing.id = entry.id;
+          trackingPeriod.timeEntries.set(existing.id, existing);
+        }
+
+        existing.projectId = group.project_id !== null && projectLookup.has(group.project_id) ? group.project_id : undefined;
+        existing.title = group.description;
+        existing.start = DateTime.fromISO(entry.start);
+        existing.end = DateTime.fromISO(entry.stop);
+        existing.duration = Duration.fromObject({ seconds: entry.seconds });
+      }
+    }
   }
 }

@@ -1,0 +1,28 @@
+<div
+  class="day"
+  [class.day-placeholder]="day.placeholder"
+  [class.no-work-day]="day.noWorkDay"
+  [class.is-future]="day.isFuture"
+>
+  <div class="date">
+    {{ day.date.toISODate() }}
+  </div>
+
+  <div class="entries" *ngIf="!day.placeholder">
+    <to-time-entry
+      [timeEntry]="entry"
+      *ngFor="let entry of day.entries"
+    ></to-time-entry>
+  </div>
+
+  <div
+    class="statistics"
+    *ngIf="!day.placeholder"
+    [class.has-overhours]="day.hoursDiff.toMillis() > 0"
+    [class.needs-overhours]="day.hoursDiff.toMillis() < 0"
+  >
+    {{ day.hoursWorked | durationFormat : day.hoursNeeded }} ({{
+      day.hoursDiff | durationFormat
+    }})
+  </div>
+</div>

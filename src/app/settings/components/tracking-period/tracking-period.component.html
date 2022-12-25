@@ -132,17 +132,14 @@
       </div>
       <div class="card-body">
         <to-weekday-percentage
-          [percentages]="trackingPeriod.noProjectHours"
+          [percentages]="trackingPeriod.noProjectHours.countRatio"
         ></to-weekday-percentage>
       </div>
     </div>
 
     <div class="card mb-3" *ngFor="let projectHours of projectHours$ | async">
       <div class="card-header d-flex align-items-center">
-        <div
-          class="project-color"
-          [ngStyle]="{ background: projectHours.project?.color }"
-        ></div>
+        <to-project-color [project]="projectHours.project"></to-project-color>
         {{ projectHours.project?.name || "(no project)" }}
       </div>
       <div class="card-body">

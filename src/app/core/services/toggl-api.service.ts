@@ -18,6 +18,7 @@ export interface ApiTogglProject {
 export interface ApiTimeEntryGroup {
   project_id: number | null;
   time_entries: ApiTimeEntry[];
+  description: string;
 }
 
 export interface ApiTimeEntry {
@@ -83,7 +84,7 @@ export class TogglApiService {
     workspaceId: number,
     togglApiToken: string
   ): Promise<ApiTogglProject[]> {
-    return firstValueFrom(
+    return (await firstValueFrom(
       this.client.get(
         `https://api.track.toggl.com/api/v9/workspaces/${workspaceId}/projects`,
         {
@@ -92,6 +93,6 @@ export class TogglApiService {
           },
         }
       ) as Observable<ApiTogglProject[]>
-    );
+    )).filter(p => p.active);
   }
 }
