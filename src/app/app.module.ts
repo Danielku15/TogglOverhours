@@ -5,53 +5,26 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SettingsComponent } from './settings/settings.component';
-import { CalendarComponent } from './calendar/calendar.component';
-import { TrackingPeriodComponent } from './tracking-period/tracking-period.component';
 import { FormsModule } from '@angular/forms';
-import { DateInputDirective } from './date-input.directive';
-import { DurationInputDirective } from './duration-input.directive';
-import { WeekdayDurationsComponent } from './weekday-durations/weekday-durations.component';
-import { WeekdayPercentageComponent } from './weekday-percentage/weekday-percentage.component';
-import { LoginComponent } from './login/login.component';
-import { LayoutComponent } from './layout/layout.component';
-import { CreateComponent } from './create/create.component';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { MonthComponent } from './month/month.component';
-import { IFileSystemService, BrowserFileSystemService, TestFileSystemService } from './file-system.service';
-import { DatabaseService } from './database.service';
-import { ToastsComponent } from './toasts/toasts.component';
-import { YearSummaryComponent } from './year-summary/year-summary.component';
-import { YearDetailsComponent } from './year-details/year-details.component';
-import { MonthSummaryComponent } from './month-summary/month-summary.component';
-import { MonthDetailsComponent } from './month-details/month-details.component';
+import { CoreModule } from './core/core.module';
+import { SharedModule } from './shared/shared.module';
+import { IFileSystemService, TestFileSystemService } from './core/services/file-system.service';
+import { DatabaseService } from './core/services/database.service';
+import { DatabaseModule } from './database/database.module';
+import { ReportingModule } from './reporting/reporting.module';
+import { SettingsModule } from './settings/settings.module';
 
-function initializeApp(service:DatabaseService) {
+function initializeApp(service: DatabaseService) {
   return () => service.reopen();
 }
 
 @NgModule({
   declarations: [
     AppComponent,
-    SettingsComponent,
-    CalendarComponent,
-    TrackingPeriodComponent,
-    DateInputDirective,
-    DurationInputDirective,
-    WeekdayDurationsComponent,
-    WeekdayPercentageComponent,
-    LoginComponent,
-    LayoutComponent,
-    CreateComponent,
-    MonthComponent,
-    ToastsComponent,
-    YearSummaryComponent,
-    YearDetailsComponent,
-    MonthSummaryComponent,
-    MonthDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -59,12 +32,18 @@ function initializeApp(service:DatabaseService) {
     AppRoutingModule,
     NgbModule,
     FontAwesomeModule,
-    HttpClientModule
+    HttpClientModule,
+
+    CoreModule,
+    SharedModule,
+    DatabaseModule,
+    ReportingModule,
+    SettingsModule
   ],
   providers: [
     // {provide: IFileSystemService, useClass: BrowserFileSystemService},
-    {provide: IFileSystemService, useClass: TestFileSystemService},
-    { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [DatabaseService], multi: true}
+    { provide: IFileSystemService, useClass: TestFileSystemService },
+    { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [DatabaseService], multi: true }
   ],
   bootstrap: [AppComponent]
 })

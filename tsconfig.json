@@ -21,11 +21,16 @@
     "useDefineForClassFields": false,
     "types": [
       "@angular/localize"
-    ],    
+    ],
     "lib": [
       "es2022",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@app/*": [
+        "src/app/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
