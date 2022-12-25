@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DateTime } from 'luxon';
-import { map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, Subscription } from 'rxjs';
 import { DatabaseService } from '../database.service';
-import { TimeTrackingPeriod } from '../model/database';
+import { Database, TimeTrackingPeriod } from '../model/database';
+import { TrackingPeriodStatistics } from '../model/work-statistics';
 
 @Component({
   selector: 'to-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
 })
-export class CalendarComponent {
- trackingPeriods$: Observable<TimeTrackingPeriod[]>;
+export class CalendarComponent implements OnDestroy {
+  private databaseSubscription: Subscription;
+
+  trackingPeriods$: Observable<TimeTrackingPeriod[]>;
 
   private _trackingPeriod?: TimeTrackingPeriod;
   get trackingPeriod(): TimeTrackingPeriod | undefined {
@@ -18,27 +21,26 @@ export class CalendarComponent {
   }
   set trackingPeriod(trackingPeriod: TimeTrackingPeriod | undefined) {
     this._trackingPeriod = trackingPeriod;
+    if (trackingPeriod) {
+      this.trackingPeriodStatistics = new TrackingPeriodStatistics(trackingPeriod);
+    }
+    else {
+      this.trackingPeriodStatistics = undefined;
+    }
   }
 
-  public months:DateTime[] = CalendarComponent.generateMonths()
+  public trackingPeriodStatistics?: TrackingPeriodStatistics;
 
-  constructor(private database: DatabaseService) {
+  constructor(database: DatabaseService) {
+    this.databaseSubscription = database.database$.subscribe(db => {
+      this.trackingPeriod = db?.trackingPeriods[0]
+    })
     this.trackingPeriods$ = database.database$.pipe(
       map((db) => db!.trackingPeriods)
     );
   }
 
-  static generateMonths(): DateTime[] {
-    const m:DateTime[] = [];
-    const year = DateTime.now().year;
-    for(let i = 0; i < 12; i++) {
-      m.push(DateTime.fromObject({
-        year: year,
-        month: 1,
-        day: 1
-      }));
-    }
-    return m;
+  ngOnDestroy(): void {
+    this.databaseSubscription.unsubscribe();
   }
-  
 }

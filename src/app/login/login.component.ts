@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { showOpenFilePicker } from 'file-system-access';
 import { DatabaseService } from '../database.service';
 import {
   IFileSystemFileHandle,

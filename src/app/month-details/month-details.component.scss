@@ -1,0 +1,24 @@
+@import 'bootstrap/scss/bootstrap';
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    border-top: 1px solid $gray-400;
+    border-right: 1px solid $gray-400;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.heading>div,
+.week>div {
+    border-left: 1px solid $gray-400;
+}
+
+.week>div {
+    aspect-ratio: 1;
+    border-bottom: 1px solid $gray-400;
+}
+
+.day-placeholder {
+    background: $gray-200;
+}

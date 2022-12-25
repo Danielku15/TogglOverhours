@@ -23,6 +23,11 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { MonthComponent } from './month/month.component';
 import { IFileSystemService, BrowserFileSystemService, TestFileSystemService } from './file-system.service';
 import { DatabaseService } from './database.service';
+import { ToastsComponent } from './toasts/toasts.component';
+import { YearSummaryComponent } from './year-summary/year-summary.component';
+import { YearDetailsComponent } from './year-details/year-details.component';
+import { MonthSummaryComponent } from './month-summary/month-summary.component';
+import { MonthDetailsComponent } from './month-details/month-details.component';
 
 function initializeApp(service:DatabaseService) {
   return () => service.reopen();
@@ -41,7 +46,12 @@ function initializeApp(service:DatabaseService) {
     LoginComponent,
     LayoutComponent,
     CreateComponent,
-    MonthComponent
+    MonthComponent,
+    ToastsComponent,
+    YearSummaryComponent,
+    YearDetailsComponent,
+    MonthSummaryComponent,
+    MonthDetailsComponent
   ],
   imports: [
     BrowserModule,

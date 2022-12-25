@@ -1,0 +1,11 @@
+<div class="wrapper">
+    <ngb-toast *ngFor="let toast of toastService.toasts" [autohide]="true" (hidden)="toastService.remove(toast)" pl
+        [class]="toast.background">
+        <ng-template [ngIf]="isTemplate(toast.body)" [ngIfElse]="bodyText">
+            <ng-template [ngTemplateOutlet]="toast.body"></ng-template>
+        </ng-template>
+        <ng-template #bodyText>
+            {{ toast.body }}
+        </ng-template>
+    </ngb-toast>
+</div>

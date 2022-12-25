@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { DateTime } from 'luxon';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
   IFileSystemFileHandle,
@@ -8,9 +9,10 @@ import { TogglDatabaseFilePickerOptions } from './model/commons';
 import {
   Database,
   PasswordEncryptingJsonSerializationContext,
+  TimeTrackingPeriod,
   WorkspaceProject,
 } from './model/database';
-import { ApiTogglProject } from './toggl-api.service';
+import { ApiTimeEntryGroup, ApiTogglProject } from './toggl-api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +25,7 @@ export class DatabaseService {
     Database | undefined
   >(undefined);
 
-  constructor(private filesystem: IFileSystemService) {}
+  constructor(private filesystem: IFileSystemService) { }
 
   async reopen() {
     const password = sessionStorage.getItem(
@@ -89,6 +91,7 @@ export class DatabaseService {
   }
 
   importProjectsFromApi(projects: ApiTogglProject[]) {
+    projects = [...projects];
     const db = this.database$.value;
     if (!db) {
       return;
@@ -124,5 +127,8 @@ export class DatabaseService {
     }
 
     this.save();
+  }
+
+  importTimeEntriesFromApi(entries: ApiTimeEntryGroup[], trackingPeriod: TimeTrackingPeriod, start: DateTime, end: DateTime) {
   }
 }

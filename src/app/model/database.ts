@@ -1,6 +1,6 @@
+import { Data, TitleStrategy } from '@angular/router';
 import { AES, format as CryptoFormat, enc as CryptoEnc } from 'crypto-js';
-import { DateTime, Duration } from 'luxon';
-import { v4 as uuidv4 } from 'uuid';
+import { DateTime, Duration, WeekdayNumbers } from 'luxon';
 import { IFileSystemFileHandle } from '../file-system.service';
 
 export interface JsonSerializationContext {
@@ -9,8 +9,7 @@ export interface JsonSerializationContext {
 }
 
 export class NonEncryptingJsonSerializationContext
-  implements JsonSerializationContext
-{
+  implements JsonSerializationContext {
   encryptData(text: string): string {
     return text;
   }
@@ -20,11 +19,10 @@ export class NonEncryptingJsonSerializationContext
 }
 
 export class PasswordEncryptingJsonSerializationContext
-  implements JsonSerializationContext
-{
+  implements JsonSerializationContext {
   static readonly prefix = 'PrefixForDetectingValidPassword_';
 
-  public constructor(private password: string) {}
+  public constructor(private password: string) { }
   encryptData(text: string): string {
     return AES.encrypt(
       PasswordEncryptingJsonSerializationContext.prefix + text,
@@ -92,6 +90,20 @@ export abstract class WeekdaySettings<T> implements JsonSerializable {
 
   abstract toJSON(): any;
   abstract fromJSON(json: any): void;
+
+
+
+  public getByWeekDay(weekday: WeekdayNumbers): T {
+    switch (weekday) {
+      case 1: return this.monday;
+      case 2: return this.tuesday;
+      case 3: return this.wednesday;
+      case 4: return this.thursday;
+      case 5: return this.friday;
+      case 6: return this.saturday;
+      case 7: return this.sunday;
+    }
+  }
 }
 
 export class WeekdayPercentage extends WeekdaySettings<number> {
@@ -162,8 +174,35 @@ export class WeekdayDuration extends WeekdaySettings<Duration> {
   }
 }
 
+export class TimeTrackingEntry implements JsonSerializable {
+  id: number = 0;
+  projectId: number = 0;
+  start: DateTime = DateTime.now();
+  end: DateTime = DateTime.now();
+  duration: Duration = Duration.fromMillis(0);
+
+  toJSON() {
+    return {
+      id: this.id,
+      projectId: this.projectId,
+      start: this.start.toISO(),
+      end: this.end.toISO(),
+      duration: this.duration.toISO(),
+    };
+  }
+
+  fromJSON(json: any): TimeTrackingEntry {
+    this.id = json.id;
+    this.projectId = json.projectId;
+    this.start = DateTime.fromISO(json.start);
+    this.end = DateTime.fromISO(json.end);
+    this.duration = Duration.fromISO(json.duration);
+    return this;
+  }
+}
+
 export class TimeTrackingPeriod implements JsonSerializable {
-  id: string = uuidv4();
+  id: string = crypto.randomUUID();
 
   start: DateTime = DateTime.now();
   end: DateTime = DateTime.now();
@@ -184,6 +223,10 @@ export class TimeTrackingPeriod implements JsonSerializable {
     ProjectSettings
   >();
 
+  timeEntries: TimeTrackingEntry[] = [];
+
+  public constructor(public database: Database) { }
+
   toJSON(): any {
     return {
       id: this.id,
@@ -203,6 +246,7 @@ export class TimeTrackingPeriod implements JsonSerializable {
           kvp[1].toJSON(),
         ])
       ),
+      timeEntries: this.timeEntries.map((t) => t.toJSON()),
     };
   }
   fromJSON(json: any): void {
@@ -221,6 +265,9 @@ export class TimeTrackingPeriod implements JsonSerializable {
         Number(kvp[0]),
         new ProjectSettings().fromJSON(kvp[1]),
       ])
+    );
+    this.timeEntries = json.timeEntries.map((v: any) =>
+      new TimeTrackingEntry().fromJSON(v)
     );
   }
 }
@@ -264,7 +311,7 @@ export class Database implements JsonSerializable {
       return p;
     });
     this.trackingPeriods = (json.trackingPeriods as any[]).map((o) => {
-      const p = new TimeTrackingPeriod();
+      const p = new TimeTrackingPeriod(this);
       p.fromJSON(o);
       return p;
     });
