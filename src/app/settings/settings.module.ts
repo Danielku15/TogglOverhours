@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SettingsOverviewComponent } from './components/settings-overview/settings-overview.component';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '@app/shared/shared.module';
 import { TrackingPeriodComponent } from './components/tracking-period/tracking-period.component';
 import { WeekdayDurationsComponent } from './components/weekday-durations/weekday-durations.component';
@@ -22,7 +21,6 @@ import { SettingsComponent } from '../settings/settings.component';
   imports: [
     CommonModule,
     FormsModule,
-    NgbModule,
     FontAwesomeModule,
     SettingsRoutingModule,
     SharedModule,

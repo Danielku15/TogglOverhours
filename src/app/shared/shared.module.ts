@@ -4,9 +4,9 @@ import { DateInputDirective } from './directives/date-input.directive';
 import { DurationInputDirective } from './directives/duration-input.directive';
 import { ToastsComponent } from './components/toasts/toasts.component';
 import { LayoutComponent } from './components/layout/layout.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { ProjectColorComponent } from './components/project-color/project-color.component';
+import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -20,8 +20,8 @@ import { ProjectColorComponent } from './components/project-color/project-color.
   ],
   imports: [
     CommonModule,
-    NgbModule,
-    RouterModule
+    RouterModule,
+    NgbToastModule
   ],
   exports: [
     DateInputDirective,

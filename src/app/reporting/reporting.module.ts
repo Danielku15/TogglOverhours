@@ -14,7 +14,7 @@ import { SharedModule } from '@app/shared/shared.module';
 import { CoreModule } from '@app/core/core.module';
 import { DayComponent } from './components/day/day.component';
 import { TimeEntryComponent } from './components/time-entry/time-entry.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -35,9 +35,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     CoreModule,
     FormsModule,
     FontAwesomeModule,
-    NgbModule,
     ReportingRoutingModule,
-    SharedModule
+    SharedModule,
+    NgbTooltipModule
   ]
 })
 export class ReportingModule { }

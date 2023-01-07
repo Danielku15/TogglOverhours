@@ -4,12 +4,9 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-import { far } from '@fortawesome/free-regular-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
+import { faCog, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { BrowserFileSystemService, IFileSystemService, TestFileSystemService } from './core/services/file-system.service';
@@ -30,7 +27,6 @@ function initializeApp(service: DatabaseService) {
     BrowserModule,
     FormsModule,
     AppRoutingModule,
-    NgbModule,
     FontAwesomeModule,
     HttpClientModule,
 
@@ -49,6 +45,8 @@ function initializeApp(service: DatabaseService) {
 })
 export class AppModule {
   public constructor(library: FaIconLibrary) {
-    library.addIconPacks(fas, far, fab)
+    library.addIcons(faCog)
+    library.addIcons(faTrash)
+    library.addIcons(faPlus)
   }
 }
