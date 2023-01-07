@@ -20,7 +20,7 @@ const routes: Routes = [
       },
       {
         path: 'about', component: AboutComponent,
-        title: 'About toggl-overhours'
+        title: 'About TogglOverhours'
       },
       {
         path: '**',
